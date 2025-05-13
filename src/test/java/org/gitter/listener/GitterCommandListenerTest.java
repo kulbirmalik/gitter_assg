@@ -30,14 +30,12 @@ public class GitterCommandListenerTest {
     @Test
     public void testNoCommandAfterGitter() {
         listener.processInput("gitter");
-        // No interaction with registry if no actual command
         verifyNoInteractions(commandRegistry);
     }
 
     @Test
     public void testUnknownCommand() {
         listener.processInput("gitter unknownCommand");
-        // Should not call any command
         verifyNoInteractions(commandRegistry);
     }
 
@@ -45,11 +43,8 @@ public class GitterCommandListenerTest {
     public void testValidCommandExecution() throws Exception {
         String[] args = {"gitter", "init"};
         CommandService mockService = mock(CommandService.class);
-
         when(commandRegistry.getService(CommandName.INIT)).thenReturn(mockService);
-
         listener.processInput("gitter init");
-
         verify(mockService).execute(args);
     }
 
@@ -58,9 +53,7 @@ public class GitterCommandListenerTest {
         CommandService mockService = mock(CommandService.class);
         when(commandRegistry.getService(CommandName.INIT)).thenReturn(mockService);
         doThrow(new RuntimeException("Command failed")).when(mockService).execute(any());
-
         listener.processInput("gitter init");
-
         verify(mockService).execute(new String[]{"gitter", "init"});
     }
 }
