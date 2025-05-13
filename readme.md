@@ -1,53 +1,65 @@
 # **GitterApplication**
 
-GitterApp is a Spring Boot-based application designed to manage file staging, commit history, and diffs in a Git-like in-memory repository. 
-It provides a CLI-style interface for interacting with staged files and committed changes, mimicking basic Git operations like add, commit, diff, status, and more.
+GitterApp is a Spring Boot-based application designed to manage file staging, commit history, and diffs in a Git-like in-memory repository. It provides a CLI-style interface for interacting with staged files and committed changes, mimicking basic Git operations like `add`, `commit`, `diff`, `status`, and more.
 
+---
 
-## ✅ Features
+## ✅ **Features**
 
-Git-like file staging (CommandAddService) – Stage and unstage files using pattern matching.
-Commit management (CommandCommitService) – Commit staged changes to an in-memory store.
-Diff viewing (CommandDiffService) – Compare file states between current and committed versions.
-Helper utilities (CommandHelperService) – Utility support for file management and processing.
-Repository initialization (CommandInitService) – Initialize a new Gitter workspace.
-Commit logs (CommandLogService) – View historical commits and their metadata.
-File status display (CommandStatusService) – Show current file statuses (staged, modified, untracked).
+- **Git-like file staging** (`CommandAddService`) – Stage and unstage files using pattern matching.
+- **Commit management** (`CommandCommitService`) – Commit staged changes to an in-memory store.
+- **Diff viewing** (`CommandDiffService`) – Compare file states between current and committed versions.
+- **Helper utilities** (`CommandHelperService`) – Utility support for file management and processing.
+- **Repository initialization** (`CommandInitService`) – Initialize a new Gitter workspace.
+- **Commit logs** (`CommandLogService`) – View historical commits and their metadata.
+- **File status display** (`CommandStatusService`) – Show current file statuses (staged, modified, untracked).
 
+---
 
+## 🛠 **Prerequisites**
 
-## 🛠 Prerequisites
+Ensure the following tools are installed:
 
-Ensure the following are installed:
-Java 17 or later
-Maven (for dependency management)
-An IDE like IntelliJ IDEA or Eclipse (optional, for development)
+- **Java 17** or later
+- **Maven** (for dependency management)
+- An IDE like IntelliJ IDEA or Eclipse (optional, for development)
 
+---
 
-## 🚀 Installation
-1. Clone the repository
+## 🚀 **Installation**
+
+1. **Clone the repository**  
+   Clone the repository to your local machine using the following command:
+   ```bash
    git clone https://github.com/yourusername/gitterApp.git
    cd gitterApp
 
-2. Install dependencies
+
+2. **Install dependencies**
+   ```bash
    mvn install
 
-3. Set the environment
+3. **Set the environment**
    Ensure Java 17+ is set in your environment:
+   ```bash
    java -version
 
-4. Build the application
+4. **Build the application**
+   ```bash
    mvn clean install
 
-## ▶️ Running the Application
-   mvn spring-boot:run
+5. **▶️Running the Application**
    This starts the GitterApp backend on the default port (typically http://localhost:8080).
+   ```bash
+   mvn spring-boot:run
+   
 
-## 🧪 Running Tests
-    mvn test
+6. **🧪Running Tests**
+   ```bash
+   mvn test
 
-
-## 📦 Available Commands
+---
+ **📦 Available Commands**
 gitter init – Initializes the Gitter workspace.
 gitter add <file-or-pattern> – Stages specified files.
 gitter status – Displays the current file status.
