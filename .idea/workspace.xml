@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c718356-0303-4fab-bac6-435794f59688" name="Changes" comment="added testcases">
+    <list default="true" id="7c718356-0303-4fab-bac6-435794f59688" name="Changes" comment="added custom testcases">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/gitter/service/impl/CommandDiffServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/gitter/service/impl/CommandDiffServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/org/gitter/service/impl/CommandStatusServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/org/gitter/service/impl/CommandStatusServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +40,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.GitterApplication.executor": "Run",
+    "JUnit.All in gitter_app_razorpay.executor": "Coverage",
     "JUnit.CommandAddServiceTest.executor": "Run",
     "JUnit.CommandAddServiceTest.testExecuteWithEmptyDirectory.executor": "Run",
     "JUnit.CommandAddServiceTest.testExecuteWithInvalidAddCommand.executor": "Run",
@@ -64,7 +64,7 @@
     "JUnit.CommandRegistryTest.executor": "Run",
     "JUnit.CommandServiceUtilsTest.executor": "Coverage",
     "JUnit.CommandServiceUtilsTest.testListAllFilesInDirectory_basicStructure.executor": "Run",
-    "JUnit.CommandStatusServiceTest.executor": "Run",
+    "JUnit.CommandStatusServiceTest.executor": "Coverage",
     "JUnit.CommandStatusServiceTest.testCreatedStagedFile.executor": "Run",
     "JUnit.CommandStatusServiceTest.testGetCommandName.executor": "Run",
     "JUnit.CommandStatusServiceTest.testHandleStatusRequest_withVariousFileStates.executor": "Run",
@@ -77,21 +77,24 @@
     "JUnit.GitterCommitEntryTest.executor": "Run",
     "JUnit.GitterHelpServiceTest.executor": "Run",
     "JUnit.GitterHelperMessageTest.executor": "Run",
-    "JUnit.GitterRepositoryTest.executor": "Run",
-    "JUnit.GitterRepositoryTest.testDetectModifiedFilesInDirectory.executor": "Debug",
+    "JUnit.GitterRepositoryTest.executor": "Coverage",
+    "JUnit.GitterRepositoryTest.testAddCommitEntry.executor": "Run",
+    "JUnit.GitterRepositoryTest.testDetectModifiedFiles.executor": "Run",
+    "JUnit.GitterRepositoryTest.testDetectModifiedFilesInDirectory.executor": "Run",
     "JUnit.GitterRepositoryTest.testGetCommittedFilesInDirectory.executor": "Run",
     "JUnit.gitter in gitter_app_razorpay.executor": "Coverage",
     "JUnit.java in gitter_app_razorpay.executor": "Coverage",
     "JUnit.org.gitter in gitter_app_razorpay.executor": "Coverage",
     "JUnit.org.gitter.utils in gitter_app_razorpay.executor": "Coverage",
+    "Maven.gitter [clean,install].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "onboarding.tips.debug.path": "/Users/kulbirmalik/IdeaProjects/gitter_app_razorpay/src/main/java/org/example/Main.java",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.last.edited": "Global Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -101,23 +104,44 @@
       <recent name="$PROJECT_DIR$/src/test/resources/dir" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.java in gitter_app_razorpay">
-    <configuration name="GitterRepositoryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.GitterRepositoryTest.testDetectModifiedFiles">
+    <configuration name="GitterApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.gitter.main.GitterApplication" />
       <module name="gitter_app_razorpay" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="org.gitter.repository.*" />
+          <option name="PATTERN" value="org.gitter.main.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="org.gitter.repository" />
-      <option name="MAIN_CLASS_NAME" value="org.gitter.repository.GitterRepositoryTest" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All in gitter_app_razorpay" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gitter_app_razorpay" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GitterCommandListenerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gitter_app_razorpay" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.gitter.listener.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.gitter.listener" />
+      <option name="MAIN_CLASS_NAME" value="org.gitter.listener.GitterCommandListenerTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GitterRepositoryTest.testAddCommitEntry" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="GitterRepositoryTest.testDetectModifiedFiles" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="gitter_app_razorpay" />
       <extension name="coverage">
         <pattern>
@@ -127,39 +151,7 @@
       </extension>
       <option name="PACKAGE_NAME" value="org.gitter.repository" />
       <option name="MAIN_CLASS_NAME" value="org.gitter.repository.GitterRepositoryTest" />
-      <option name="METHOD_NAME" value="testAddCommitEntry" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GitterRepositoryTest.testDetectModifiedFilesInDirectory" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="gitter_app_razorpay" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.gitter.repository.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.gitter.repository" />
-      <option name="MAIN_CLASS_NAME" value="org.gitter.repository.GitterRepositoryTest" />
-      <option name="METHOD_NAME" value="testDetectModifiedFilesInDirectory(java.io.File)" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="GitterRepositoryTest.testGetCommittedFilesInDirectory" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="gitter_app_razorpay" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="org.gitter.repository.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="org.gitter.repository" />
-      <option name="MAIN_CLASS_NAME" value="org.gitter.repository.GitterRepositoryTest" />
-      <option name="METHOD_NAME" value="testGetCommittedFilesInDirectory(java.io.File)" />
+      <option name="METHOD_NAME" value="testDetectModifiedFiles(java.io.File)" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -175,11 +167,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.GitterRepositoryTest.testDetectModifiedFiles" />
         <item itemvalue="JUnit.java in gitter_app_razorpay" />
-        <item itemvalue="JUnit.GitterRepositoryTest" />
-        <item itemvalue="JUnit.GitterRepositoryTest.testDetectModifiedFilesInDirectory" />
-        <item itemvalue="JUnit.GitterRepositoryTest.testGetCommittedFilesInDirectory" />
-        <item itemvalue="JUnit.GitterRepositoryTest.testAddCommitEntry" />
+        <item itemvalue="JUnit.GitterCommandListenerTest" />
+        <item itemvalue="JUnit.All in gitter_app_razorpay" />
+        <item itemvalue="Application.GitterApplication" />
       </list>
     </recent_temporary>
   </component>
@@ -224,7 +216,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747166070754</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="testcases increased to 85%">
+      <option name="closed" value="true" />
+      <created>1747166819214</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747166819214</updated>
+    </task>
+    <task id="LOCAL-00006" summary="added custom testcases">
+      <option name="closed" value="true" />
+      <created>1747167832024</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1747167832024</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -232,7 +240,9 @@
     <MESSAGE value="added pom and gitignore" />
     <MESSAGE value="refactored code" />
     <MESSAGE value="added testcases" />
-    <option name="LAST_COMMIT_MESSAGE" value="added testcases" />
+    <MESSAGE value="testcases increased to 85%" />
+    <MESSAGE value="added custom testcases" />
+    <option name="LAST_COMMIT_MESSAGE" value="added custom testcases" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -281,8 +291,9 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/gitter_app_razorpay$java_in_gitter_app_razorpay.ic" NAME="java in gitter_app_razorpay Coverage Results" MODIFIED="1747166216703" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
-    <SUITE FILE_PATH="coverage/gitter_app_razorpay$GitterRepositoryTest.ic" NAME="GitterRepositoryTest Coverage Results" MODIFIED="1747159288742" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+    <SUITE FILE_PATH="coverage/gitter_app_razorpay$All_in_gitter_app_razorpay.ic" NAME="All in gitter_app_razorpay Coverage Results" MODIFIED="1747169286765" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/gitter_app_razorpay$java_in_gitter_app_razorpay.ic" NAME="java in gitter_app_razorpay Coverage Results" MODIFIED="1747167856880" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/gitter_app_razorpay$GitterRepositoryTest.ic" NAME="GitterRepositoryTest Coverage Results" MODIFIED="1747166765231" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>org.gitter.repository.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/gitter_app_razorpay$CommandHelperServiceTest.ic" NAME="CommandHelperServiceTest Coverage Results" MODIFIED="1747163188096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
@@ -297,8 +308,8 @@
     <SUITE FILE_PATH="coverage/gitter_app_razorpay$CommandLogServiceTest.ic" NAME="CommandLogServiceTest Coverage Results" MODIFIED="1747163375174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>org.gitter.service.impl.*</FILTER>
     </SUITE>
-    <SUITE FILE_PATH="coverage/gitter_app_razorpay$gitter_in_gitter_app_razorpay.ic" NAME="gitter in gitter_app_razorpay Coverage Results" MODIFIED="1747164296651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
-    <SUITE FILE_PATH="coverage/gitter_app_razorpay$CommandStatusServiceTest.ic" NAME="CommandStatusServiceTest Coverage Results" MODIFIED="1747163854440" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+    <SUITE FILE_PATH="coverage/gitter_app_razorpay$gitter_in_gitter_app_razorpay.ic" NAME="gitter in gitter_app_razorpay Coverage Results" MODIFIED="1747166628799" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true" />
+    <SUITE FILE_PATH="coverage/gitter_app_razorpay$CommandStatusServiceTest.ic" NAME="CommandStatusServiceTest Coverage Results" MODIFIED="1747166619069" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
       <FILTER>org.gitter.service.impl.*</FILTER>
     </SUITE>
     <SUITE FILE_PATH="coverage/gitter_app_razorpay$CommandInitServiceTest.ic" NAME="CommandInitServiceTest Coverage Results" MODIFIED="1747163280029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
