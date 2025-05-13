@@ -10,9 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static org.gitter.utils.CommandServiceUtils.listAllFilesRecursively;
+import static org.gitter.utils.CommandServiceUtils.*;
+import static org.gitter.utils.CommandServiceUtils.getBaseGitterDir;
 
 @Slf4j
 @Service
@@ -23,7 +23,7 @@ public class CommandStatusService implements CommandService {
 
     @Override
     public void execute(String[] args) {
-        printStatus();
+        handleStatusRequest();
     }
 
     @Override
@@ -31,54 +31,50 @@ public class CommandStatusService implements CommandService {
         return CommandName.STATUS;
     }
 
-    private void printStatus() {
-        File workingDir = new File(".gitter");
-        if (!workingDir.exists()) return;
+    private void handleStatusRequest() {
+        if (!getBaseGitterDir().exists()) return;
 
         Set<String> stagedFiles = gitterRepository.getStagedFiles();
         Set<String> committedFiles = gitterRepository.getCommittedFiles();
-
-        List<File> allFiles = listAllFilesRecursively(workingDir);
-        Set<String> currentFileNames = allFiles.stream()
-                .map(file -> workingDir.toPath().relativize(file.toPath()).toString().replace("\\", "/"))
-                .filter(name -> !(name.equals("HEAD") || name.startsWith("refs")))
-                .collect(Collectors.toSet());
+        List<File> allFilesInDir = listAllFilesInDirectory(getBaseGitterDir());
 
         Map<String, String> toBeCommitted = new LinkedHashMap<>();
         Map<String, String> notStaged = new LinkedHashMap<>();
         List<String> untracked = new ArrayList<>();
 
-        for (String filename : currentFileNames) {
-            boolean isCommitted = committedFiles.contains(filename);
-            boolean isStaged = stagedFiles.contains(filename);
-            File file = new File(workingDir, filename);
+        for (File file : allFilesInDir) {
+            String fileName = getBaseGitterDir().toPath().relativize(file.toPath()).toString();
+            boolean isCommitted = committedFiles.contains(fileName);
+            boolean isStaged = stagedFiles.contains(fileName);
 
             if (!isCommitted) {
                 if (isStaged) {
-                    toBeCommitted.put(filename, "created");
+                    // if not in committed , means a new file has been created and is in staging area
+                    toBeCommitted.put(fileName, "created");
                 } else {
-                    untracked.add(filename);
+                    untracked.add(fileName);
                 }
             } else {
                 try {
                     String currentContent = Files.readString(file.toPath());
-                    String committedContent = gitterRepository.getCommittedFileContent(filename);
-
+                    String committedContent = gitterRepository.getCommittedFileContent(fileName);
                     boolean isModified = !Objects.equals(currentContent, committedContent);
 
+                    // if any committed file is modified
                     if (isModified) {
                         if (isStaged) {
-                            toBeCommitted.put(filename, "modified");
+                            toBeCommitted.put(fileName, "modified");
                         } else {
-                            notStaged.put(filename, "modified");
+                            notStaged.put(fileName, "modified");
                         }
                     }
                 } catch (IOException ignored) {}
             }
         }
 
+        // for checking deleted files
         for (String committedFile : committedFiles) {
-            if (!currentFileNames.contains(committedFile)) {
+            if (!containsFile(allFilesInDir, getBaseGitterDir().toPath(), committedFile)) {
                 if (stagedFiles.contains(committedFile)) {
                     toBeCommitted.put(committedFile, "deleted");
                 } else {
@@ -87,21 +83,25 @@ public class CommandStatusService implements CommandService {
             }
         }
 
+        printStatus(toBeCommitted, notStaged, untracked);
+    }
+
+    private void printStatus(Map<String, String> toBeCommitted, Map<String, String> notStaged, List<String> untracked) {
         if (!toBeCommitted.isEmpty()) {
-            System.out.println("Changes to be committed:");
-            toBeCommitted.forEach((file, status) -> System.out.println("  " + status + ": " + file));
-            System.out.println();
+            log.info("Changes to be committed:");
+            toBeCommitted.forEach((file, status) -> log.info("  {}: {}", status, file));
+            log.info("");
         }
 
         if (!notStaged.isEmpty()) {
-            System.out.println("Changes not staged for commit:");
-            notStaged.forEach((file, status) -> System.out.println("  " + status + ": " + file));
-            System.out.println();
+            log.info("Changes not staged for commit:");
+            notStaged.forEach((file, status) -> log.info("  {}: {}", status, file));
+            log.info("");
         }
 
         if (!untracked.isEmpty()) {
-            System.out.println("Untracked files:");
-            untracked.forEach(f -> System.out.println("  " + f));
+            log.info("Untracked files:");
+            untracked.forEach(f -> log.info("  {}", f));
         }
     }
 }

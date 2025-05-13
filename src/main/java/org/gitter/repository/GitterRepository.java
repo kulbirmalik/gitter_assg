@@ -7,9 +7,12 @@ import org.springframework.stereotype.Repository;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.gitter.utils.CommandServiceUtils.getBaseGitterDir;
 
 @Slf4j
 @Repository
@@ -24,13 +27,13 @@ public class GitterRepository {
         stagedFiles.addAll(filesToStage);
     }
 
+    public void clearStagedFiles() {
+        stagedFiles.clear();
+    }
+
     public void stageAllModifiedFiles() {
         List<String> modifiedFiles = detectModifiedFiles();
         stagedFiles.addAll(modifiedFiles);
-    }
-
-    public void clearStagedFiles() {
-        stagedFiles.clear();
     }
 
     public void markFileAsCommitted(String filename, String content) {
@@ -47,7 +50,6 @@ public class GitterRepository {
         commitHistory.add(entry);
     }
 
-
     public List<GitterCommitEntry> getCommitHistory() {
         return new ArrayList<>(commitHistory);
     }
@@ -58,6 +60,16 @@ public class GitterRepository {
 
     public Set<String> getCommittedFiles() {
         return Collections.unmodifiableSet(committedFiles);
+    }
+
+    public Set<String> getCommittedFilesInDirectory(File directory) {
+        Path dirPath = directory.toPath();
+        return committedFiles.stream()
+                .filter(path -> {
+                    Path fullPath = getBaseGitterDir().toPath().resolve(path).normalize();
+                    return fullPath.startsWith(dirPath.normalize());
+                })
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     public String getCommittedFileContent(String filename) {
@@ -77,6 +89,30 @@ public class GitterRepository {
 
             }
         }
+        return modified;
+    }
+
+    public Set<String> detectModifiedFilesInDirectory(File directory) {
+        Set<String> modified = new HashSet<>();
+        Path dirPath = directory.toPath();
+
+        for (String committedFile : committedFiles) {
+            Path committedFilePath = getBaseGitterDir().toPath().resolve(committedFile);
+            Path relativeToDir = dirPath.relativize(committedFilePath);
+
+            if (!relativeToDir.startsWith("..") && !relativeToDir.isAbsolute()) {
+                try {
+                    String currentContent = Files.readString(committedFilePath);
+                    String committed = committedContent.getOrDefault(committedFile, "");
+                    if (!Objects.equals(currentContent, committed)) {
+                        modified.add(committedFile);
+                    }
+                } catch (IOException exception) {
+                    log.error("Failed in reading file : {} ", exception.getMessage());
+                }
+            }
+        }
+
         return modified;
     }
 }

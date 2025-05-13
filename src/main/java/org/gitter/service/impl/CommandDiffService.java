@@ -13,9 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static org.gitter.utils.CommandServiceUtils.listAllFilesRecursively;
+import static org.gitter.utils.CommandServiceUtils.*;
 
 @Slf4j
 @Service
@@ -26,7 +25,7 @@ public class CommandDiffService implements CommandService {
 
     @Override
     public void execute(String[] args) {
-        showDiff(args);
+        handleDiffRequest(args);
     }
 
     @Override
@@ -34,150 +33,108 @@ public class CommandDiffService implements CommandService {
         return CommandName.DIFF;
     }
 
-    private void showDiff(String[] args) {
-        File baseRepoDir = new File(".gitter");
-        if (!baseRepoDir.exists() || !baseRepoDir.isDirectory()) return;
+    private void handleDiffRequest(String[] args) {
+        if (!getBaseGitterDir().exists()) return;
 
-        Path basePath = baseRepoDir.toPath();
-        Set<String> modifiedFileSet = new HashSet<>(gitterRepository.detectModifiedFiles());
-        Set<String> committedFiles = new HashSet<>(gitterRepository.getCommittedFiles());
-        List<File> allFiles = listAllFilesRecursively(baseRepoDir);
-
-        List<File> targetFiles = new ArrayList<>();
+        Set<File> targetFiles = new HashSet<>();
         Set<String> deletedFiles = new HashSet<>();
 
-        // Determine the scope
         if (args.length > 2) {
-            String inputPath = args[2];
-            File inputFile = new File(".gitter", inputPath);
-            if (inputFile.exists()) {
-                if (inputFile.isFile()) {
-                    Path relPath = basePath.relativize(inputFile.toPath());
-                    String relativePathString = relPath.toString().replace("\\", "/");
-
-                    if (modifiedFileSet.contains(relativePathString) || !committedFiles.contains(relativePathString)) {
-                        targetFiles.add(inputFile);
-                    }
-
-                    if (committedFiles.contains(relativePathString) && !inputFile.exists()) {
-                        deletedFiles.add(relativePathString);
-                    }
-
-                } else if (inputFile.isDirectory()) {
-                    List<File> allFilesInDirectory = listAllFilesRecursively(inputFile);
-
-                    for (File file : allFilesInDirectory) {
-                        Path relPath = basePath.relativize(file.toPath());
-                        String relativePathString = relPath.toString().replace("\\", "/");
-
-                        if ((modifiedFileSet.contains(relativePathString) || !committedFiles.contains(relativePathString))
-                                && !file.getName().equals("HEAD")
-                                && !relativePathString.startsWith("refs")) {
-                            targetFiles.add(file);
-                        }
-                    }
-
-                    for (String committedFile : committedFiles) {
-                        if (committedFile.startsWith(inputPath + "/")) {
-                            File file = new File(".gitter", committedFile);
-                            if (!file.exists()) {
-                                deletedFiles.add(committedFile);
-                            }
-                        }
-                    }
-                }
-            } else {
-                System.out.println("File or directory not found: " + inputPath);
-                return;
-            }
+            processPathArgument(args[2], targetFiles, deletedFiles);
+        } else {
+            collectDiffsFromDirectory(getBaseGitterDir(), targetFiles, deletedFiles);
         }
-        else {
-            for (String modifiedFile : modifiedFileSet) {
-                targetFiles.add(new File(".gitter", modifiedFile));
-            }
+        printDeletedFileDiffs(deletedFiles);
+        printModifiedFileDiffs(targetFiles);
+    }
 
-            for (File file : allFiles) {
-                Path relPath = basePath.relativize(file.toPath());
-                String relative = relPath.toString().replace("\\", "/");
-                if (!committedFiles.contains(relative)
-                        && !file.getName().equals("HEAD")
-                        && !relative.startsWith("refs")) {
-                    targetFiles.add(file);
-                }
-            }
+    private void processPathArgument(String pathArg, Set<File> targetFiles, Set<String> deletedFiles) {
+        File inputFile = new File(".gitter", pathArg);
+        if (!inputFile.exists()) {
+            log.warn("Specified file or directory not found: {}", pathArg);
+            return;
+        }
 
-            deletedFiles = new HashSet<>(committedFiles);
-            for (File file : allFiles) {
-                Path relPath = basePath.relativize(file.toPath());
-                String relative = relPath.toString().replace("\\", "/");
-                deletedFiles.remove(relative);
+        if (inputFile.isFile()) {
+            handleSingleFile(inputFile, targetFiles, deletedFiles);
+        } else {
+            collectDiffsFromDirectory(inputFile, targetFiles, deletedFiles);
+        }
+    }
+
+    private void handleSingleFile(File file, Set<File> targetFiles, Set<String> deletedFiles) {
+        Path basePath = getBaseGitterDir().toPath();
+        String relativePath = basePath.relativize(file.toPath()).toString().replace("\\", "/");
+
+        Set<String> modifiedFiles = gitterRepository.detectModifiedFilesInDirectory(getBaseGitterDir());
+        Set<String> committedFiles = gitterRepository.getCommittedFilesInDirectory(getBaseGitterDir());
+
+        if (modifiedFiles.contains(relativePath) || !committedFiles.contains(relativePath)) {
+            targetFiles.add(file);
+        }
+        if (committedFiles.contains(relativePath) && !file.exists()) {
+            deletedFiles.add(relativePath);
+        }
+    }
+
+    private void collectDiffsFromDirectory(File dir, Set<File> targetFiles, Set<String> deletedFiles) {
+        Path basePath = getBaseGitterDir().toPath();
+        Set<String> modifiedFiles = gitterRepository.detectModifiedFilesInDirectory(dir);
+        Set<String> committedFiles = gitterRepository.getCommittedFilesInDirectory(dir);
+        List<File> allFiles = listAllFilesInDirectory(dir);
+
+        for (String modified : modifiedFiles) {
+            targetFiles.add(new File(".gitter", modified));
+        }
+
+        for (File file : allFiles) {
+            String relative = basePath.relativize(file.toPath()).toString().replace("\\", "/");
+            if (!committedFiles.contains(relative)
+                    && !file.getName().equals("HEAD")
+                    && !relative.startsWith("refs")) {
+                targetFiles.add(file);
             }
         }
 
-        for (String deletedFile : deletedFiles) {
-            System.out.println("--- a/" + deletedFile);
-            System.out.println("+++ b/" + null);
-            String committedContent = gitterRepository.getCommittedFileContent(deletedFile);
-            for (String line : committedContent.split("\\R")) {
-                System.out.println("-" + line);
-            }
-            System.out.println();
+        deletedFiles.addAll(committedFiles);
+        for (File file : allFiles) {
+            String relative = basePath.relativize(file.toPath()).toString().replace("\\", "/");
+            deletedFiles.remove(relative);
         }
+    }
 
+    private void printDeletedFileDiffs(Set<String> deletedFiles) {
+        for (String file : deletedFiles) {
+            log.info("--- a/{}", file);
+            log.info("+++ b/null");
+            String content = gitterRepository.getCommittedFileContent(file);
+            for (String line : content.split("\\R")) {
+                log.info("-{}", line);
+            }
+            log.info("");
+        }
+    }
+
+    private void printModifiedFileDiffs(Set<File> files) {
         DiffMatchPatch dmp = new DiffMatchPatch();
-        for (File file : targetFiles) {
-            Path relPath = basePath.relativize(file.toPath());
-            String relative = relPath.toString().replace("\\", "/");
+        Path basePath = getBaseGitterDir().toPath();
+        Set<String> committedFiles = gitterRepository.getCommittedFilesInDirectory(getBaseGitterDir());
 
+        for (File file : files) {
+            String relative = basePath.relativize(file.toPath()).toString().replace("\\", "/");
             try {
                 String currentContent = Files.readString(file.toPath());
                 String committedContent = gitterRepository.getCommittedFileContent(relative);
 
                 if (!committedFiles.contains(relative)) {
-                    System.out.println("+++ b/" + relative);
+                    log.info("+++ b/{}", relative);
                     for (String line : currentContent.split("\\R")) {
-                        System.out.println("+" + line);
+                        log.info("+{}", line);
                     }
                 } else {
-                    System.out.println("--- a/" + relative);
-                    System.out.println("+++ b/" + relative);
-
-                    List<String> committedLines = Arrays.asList(committedContent.split("\\R"));
-                    List<String> currentLines = Arrays.asList(currentContent.split("\\R"));
-                    int maxLines = Math.max(committedLines.size(), currentLines.size());
-
-                    List<Integer> changedLineIndices = new ArrayList<>();
-                    for (int i = 0; i < maxLines; i++) {
-                        String oldLine = i < committedLines.size() ? committedLines.get(i) : "";
-                        String newLine = i < currentLines.size() ? currentLines.get(i) : "";
-                        if (!oldLine.equals(newLine)) {
-                            LinkedList<DiffMatchPatch.Diff> diffs = dmp.diffMain(oldLine, newLine);
-                            dmp.diffCleanupSemantic(diffs);
-                            if (diffs.stream().anyMatch(d -> d.operation != DiffMatchPatch.Operation.EQUAL)) {
-                                changedLineIndices.add(i);
-                            }
-                        }
-                    }
-
-                    int CONTEXT = 2;
-                    Set<Integer> linesToPrint = new TreeSet<>();
-                    for (int i : changedLineIndices) {
-                        for (int j = Math.max(0, i - CONTEXT); j <= Math.min(maxLines - 1, i + CONTEXT); j++) {
-                            linesToPrint.add(j);
-                        }
-                    }
-
-                    for (int i : linesToPrint) {
-                        String oldLine = i < committedLines.size() ? committedLines.get(i) : "";
-                        String newLine = i < currentLines.size() ? currentLines.get(i) : "";
-
-                        if (!oldLine.equals(newLine)) {
-                            if (!oldLine.isEmpty()) System.out.println("-" + oldLine);
-                            if (!newLine.isEmpty()) System.out.println("+" + newLine);
-                        } else {
-                            System.out.println(" " + oldLine);
-                        }
-                    }
+                    log.info("--- a/{}", relative);
+                    log.info("+++ b/{}", relative);
+                    printLineDiffs(dmp, committedContent, currentContent);
                 }
             } catch (IOException e) {
                 log.error("Error reading file {}: {}", file.getName(), e.getMessage());
@@ -185,5 +142,41 @@ public class CommandDiffService implements CommandService {
         }
     }
 
-}
+    private void printLineDiffs(DiffMatchPatch dmp, String committed, String current) {
+        List<String> oldLines = Arrays.asList(committed.split("\\R"));
+        List<String> newLines = Arrays.asList(current.split("\\R"));
+        int max = Math.max(oldLines.size(), newLines.size());
 
+        List<Integer> changedLines = new ArrayList<>();
+        for (int i = 0; i < max; i++) {
+            String oldLine = i < oldLines.size() ? oldLines.get(i) : "";
+            String newLine = i < newLines.size() ? newLines.get(i) : "";
+            if (!oldLine.equals(newLine)) {
+                LinkedList<DiffMatchPatch.Diff> diffs = dmp.diffMain(oldLine, newLine);
+                dmp.diffCleanupSemantic(diffs);
+                if (diffs.stream().anyMatch(d -> d.operation != DiffMatchPatch.Operation.EQUAL)) {
+                    changedLines.add(i);
+                }
+            }
+        }
+
+        int CONTEXT = 2;
+        Set<Integer> linesToPrint = new TreeSet<>();
+        for (int index : changedLines) {
+            for (int j = Math.max(0, index - CONTEXT); j <= Math.min(max - 1, index + CONTEXT); j++) {
+                linesToPrint.add(j);
+            }
+        }
+
+        for (int i : linesToPrint) {
+            String oldLine = i < oldLines.size() ? oldLines.get(i) : "";
+            String newLine = i < newLines.size() ? newLines.get(i) : "";
+            if (!oldLine.equals(newLine)) {
+                if (!oldLine.isEmpty()) log.info("-{}", oldLine);
+                if (!newLine.isEmpty()) log.info("+{}", newLine);
+            } else {
+                log.info(" {}", oldLine);
+            }
+        }
+    }
+}
