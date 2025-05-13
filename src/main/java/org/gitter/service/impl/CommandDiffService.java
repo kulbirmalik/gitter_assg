@@ -7,13 +7,11 @@ import org.gitter.model.enums.CommandName;
 import org.gitter.repository.GitterRepository;
 import org.gitter.service.CommandService;
 import org.springframework.stereotype.Service;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-
 import static org.gitter.utils.CommandServiceUtils.*;
 
 @Slf4j

@@ -2,11 +2,12 @@ package org.gitter.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gitter.exception.CommandExecutionException;
+import org.gitter.exception.CommandNotFoundException;
 import org.gitter.model.enums.CommandName;
 import org.gitter.registry.CommandRegistry;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
 import java.util.Scanner;
 
 @Component
@@ -35,7 +36,7 @@ public class GitterCommandListener implements CommandLineRunner {
         }
     }
 
-    // Add a new method for processing a single line (makes testing easier)
+    // Added this for incorporating junit test cases
     public void processInput(String input) {
         if (input == null || input.trim().isEmpty()) return;
 
@@ -57,10 +58,12 @@ public class GitterCommandListener implements CommandLineRunner {
         try {
             CommandName commandName = CommandName.valueOf(args[1].toUpperCase());
             commandRegistry.getService(commandName).execute(args);
-        } catch (IllegalArgumentException e) {
-            log.warn("Unknown command: {}", args[1]);
+        } catch (CommandNotFoundException e) {
+            log.warn(e.getMessage());
+        } catch (CommandExecutionException e) {
+            log.error(e.getMessage(), e);
         } catch (Exception e) {
-            log.error("Error executing command '{}': {}", args[1], e.getMessage(), e);
+            log.error("Unexpected error: {}", e.getMessage(), e);
         }
     }
 }

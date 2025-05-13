@@ -1,7 +1,7 @@
 package org.gitter.service.impl;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gitter.exception.GitterHashGenerationException;
 import org.gitter.model.GitterCommitEntry;
 import org.gitter.model.enums.CommandName;
 import org.gitter.repository.GitterRepository;
@@ -34,10 +34,12 @@ public class CommandCommitService implements CommandService {
     }
 
     private void handleCommit(String[] args) {
-        if(isInvalidCommitRequest(args)){
+        if (isInvalidCommitRequest(args)) {
             return;
         }
+
         String message = getCommitMessageFromRequest(args);
+
         if (args[2].equals("-am")) {
             gitterRepository.stageAllModifiedFiles();
         }
@@ -79,7 +81,8 @@ public class CommandCommitService implements CommandService {
             }
             return hexString.toString();
         } catch (Exception e) {
-            throw new RuntimeException("Error generating commit hash", e);
+            log.error("Error generating commit hash for input : {} ", e.getMessage());
+            throw new GitterHashGenerationException("Error generating commit hash for input: " + input, e);
         }
     }
 
@@ -95,5 +98,4 @@ public class CommandCommitService implements CommandService {
         int messageStartIndex = 3;
         return Arrays.stream(args).skip(messageStartIndex).collect(Collectors.joining(" ")).replaceAll("^\"|\"$", "");
     }
-
 }
