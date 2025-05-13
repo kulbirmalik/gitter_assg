@@ -60,9 +60,9 @@ Ensure the following tools are installed:
 
 ---
  **📦 Available Commands**
-gitter init – Initializes the Gitter workspace.
-gitter add <file-or-pattern> – Stages specified files.
-gitter status – Displays the current file status.
-gitter commit -m "<message>" – Commits staged changes with a message.
-gitter diff [<file-or-path>] – Shows file differences (optionally filtered).
-gitter log – Lists commit history.
+1. gitter init – Initializes the Gitter workspace.
+2. gitter add <file-or-pattern> – Stages specified files.
+3. gitter status – Displays the current file status.
+4. gitter commit -m "<message>" – Commits staged changes with a message.
+5. gitter diff [<file-or-path>] – Shows file differences (optionally filtered).
+6. gitter log – Lists commit history.
