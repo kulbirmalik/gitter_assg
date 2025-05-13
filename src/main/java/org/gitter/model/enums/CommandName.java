@@ -7,5 +7,6 @@ public enum CommandName {
     DIFF,
     COMMIT,
     LOG,
-    INIT
+    INIT,
+    UNKNOWN // added for testing
 }

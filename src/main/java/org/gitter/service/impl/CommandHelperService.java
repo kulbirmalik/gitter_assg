@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommandHelperService implements CommandService {
 
+    private final GitterHelpService gitterHelpService;
+
     @Override
     public void execute(String[] args) {
         handleHelp(args);
@@ -22,8 +24,6 @@ public class CommandHelperService implements CommandService {
     public CommandName getCommandName() {
         return CommandName.HELP;
     }
-
-    private final GitterHelpService gitterHelpService;
 
     private void handleHelp(String[] args) {
         if (args.length == 2) {

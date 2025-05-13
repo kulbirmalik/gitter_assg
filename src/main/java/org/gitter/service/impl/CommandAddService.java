@@ -31,7 +31,9 @@ public class CommandAddService implements CommandService {
     }
 
     private void handleAdd(String[] args) {
-        validateAddRequest(args);
+        if(isInValidAddRequest(args)){
+            return;
+        }
         File gitterDir = new File(GITTER_DIR);
         Pattern regexPattern = getRegexPattern(args[2]);
 
@@ -58,16 +60,18 @@ public class CommandAddService implements CommandService {
         gitterRepo.stageFiles(allFilesToStage);
     }
 
-    private void validateAddRequest(String[] args) {
+    private boolean isInValidAddRequest(String[] args) {
         if (args.length < 3) {
             log.warn("Usage: gitter add . OR gitter add <pattern>");
-            return;
+            return true;
         }
 
         File gitterDir = new File(GITTER_DIR);
         if (!gitterDir.exists()) {
             log.error("Error: not a gitter repository (or any of the parent directories): .gitter");
+            return true;
         }
+        return false;
     }
 
     private Pattern getRegexPattern(String pattern) {

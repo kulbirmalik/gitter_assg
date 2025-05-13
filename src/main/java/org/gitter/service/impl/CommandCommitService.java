@@ -34,7 +34,9 @@ public class CommandCommitService implements CommandService {
     }
 
     private void handleCommit(String[] args) {
-        validateCommitRequest(args);
+        if(isInvalidCommitRequest(args)){
+            return;
+        }
         String message = getCommitMessageFromRequest(args);
         if (args[2].equals("-am")) {
             gitterRepository.stageAllModifiedFiles();
@@ -81,10 +83,12 @@ public class CommandCommitService implements CommandService {
         }
     }
 
-    private void validateCommitRequest(String[] args) {
+    private boolean isInvalidCommitRequest(String[] args) {
         if (args.length < 3 || (!args[2].equals("-m") && !args[2].equals("-am"))) {
             log.warn("Usage: gitter commit -m \"<message>\" or gitter commit -am \"<message>\"");
+            return true;
         }
+        return false;
     }
 
     private String getCommitMessageFromRequest(String[] args) {

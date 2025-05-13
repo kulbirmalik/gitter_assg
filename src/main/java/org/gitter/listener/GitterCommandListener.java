@@ -35,6 +35,19 @@ public class GitterCommandListener implements CommandLineRunner {
         }
     }
 
+    // Add a new method for processing a single line (makes testing easier)
+    public void processInput(String input) {
+        if (input == null || input.trim().isEmpty()) return;
+
+        String[] tokens = input.trim().split("\\s+");
+        if (!tokens[0].equals("gitter")) {
+            log.warn("Invalid command. Commands must start with 'gitter'.");
+            return;
+        }
+
+        handleCommand(tokens);
+    }
+
     private void handleCommand(String[] args) {
         if (args.length < 2) {
             log.warn("No command provided after 'gitter'.");
