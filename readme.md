@@ -84,3 +84,5 @@ Ensure the following tools are installed:
 ![Gitter CLI Example](images/gitter_add_commit.png)
 
 ![Gitter CLI Example](images/gitter_diff.png)
+
+![Gitter CLI Example](images/gitter_log.png)
