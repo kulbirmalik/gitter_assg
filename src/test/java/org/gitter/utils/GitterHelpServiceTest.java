@@ -15,7 +15,7 @@ public class GitterHelpServiceTest {
     @BeforeEach
     void setUp() {
         helpService = new GitterHelpService();
-        helpService.initHelpDocs();  // Manually trigger initialization
+        helpService.initHelpDocs();
     }
 
     @Test

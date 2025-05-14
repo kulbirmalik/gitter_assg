@@ -14,7 +14,6 @@ class CommandServiceUtilsTest {
 
     @Test
     void testListAllFilesInDirectory_withFiles() {
-        // Arrange
         File mockDir = mock(File.class);
         File file1 = mock(File.class);
         File file2 = mock(File.class);

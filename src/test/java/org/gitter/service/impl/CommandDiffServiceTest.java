@@ -56,7 +56,6 @@ class CommandDiffServiceTest {
             when(gitterRepository.getCommittedFileContent("file1.txt"))
                     .thenReturn("line1\nline2");
 
-            // Mock file content via spy or avoid actual I/O depending on setup
             commandDiffService.execute(new String[]{"gitter", "diff"});
         }
     }
@@ -64,7 +63,6 @@ class CommandDiffServiceTest {
     @Test
     void testExecuteWithNonexistentInputFile() {
         File mockGitterDir = new File(".gitter");
-        File nonExistentFile = new File(".gitter/nonexistent.txt");
 
         try (MockedStatic<CommandServiceUtils> utils = mockStatic(CommandServiceUtils.class)) {
             utils.when(CommandServiceUtils::getBaseGitterDir).thenReturn(mockGitterDir);

@@ -29,18 +29,13 @@ class CommandCommitServiceTest {
 
     @Test
     void testExecuteWithMessageOnly() throws Exception {
-        // Arrange
         String[] args = {"gitter", "commit", "-m", "initial commit"};
         File file = new File(gitterDir, "file1.txt");
         Files.writeString(file.toPath(), "hello");
 
         Set<String> stagedFiles = new HashSet<>(Collections.singletonList("file1.txt"));
         when(gitterRepository.getStagedFiles()).thenReturn(stagedFiles);
-
-        // Act
         commandCommitService.execute(args);
-
-        // Assert
         verify(gitterRepository).markFileAsCommitted(eq("file1.txt"), eq("hello"));
         verify(gitterRepository).clearStagedFiles();
         verify(gitterRepository).addCommitEntry(any(GitterCommitEntry.class));
@@ -48,31 +43,21 @@ class CommandCommitServiceTest {
 
     @Test
     void testExecuteWithAutoStageModifiedFiles() {
-        // Arrange
         String[] args = {"gitter", "commit", "-am", "auto stage commit"};
         when(gitterRepository.getStagedFiles()).thenReturn(new HashSet<>());
-
-        // Act
         commandCommitService.execute(args);
-
-        // Assert
         verify(gitterRepository).stageAllModifiedFiles();
     }
 
     @Test
     void testExecuteWithDeletedFile() {
-        // Arrange
         String[] args = {"gitter", "commit", "-m", "deleted file"};
         String deletedFile = "deleted.txt";
         Set<String> stagedFiles = new HashSet<>(Collections.singletonList(deletedFile));
         when(gitterRepository.getStagedFiles()).thenReturn(stagedFiles);
         File file = new File(gitterDir, deletedFile);
-        file.delete(); // Ensure it's not present
-
-        // Act
+        file.delete();
         commandCommitService.execute(args);
-
-        // Assert
         verify(gitterRepository).removeCommittedFile(deletedFile);
         verify(gitterRepository).clearStagedFiles();
         verify(gitterRepository, never()).markFileAsCommitted(eq(deletedFile), any());
@@ -80,31 +65,20 @@ class CommandCommitServiceTest {
 
     @Test
     void testExecuteWithInvalidArgs() {
-        // Arrange
         String[] args = {"gitter", "commit"};
-
-        // Act
         commandCommitService.execute(args);
-
-        // Assert
         verify(gitterRepository, never()).getStagedFiles();
     }
 
     @Test
     void testCommitHashIsGeneratedAndCommitSaved() throws Exception {
-        // Arrange
         String[] args = {"gitter", "commit", "-m", "test hash"};
         File file = new File(gitterDir, "fileA.txt");
         Files.writeString(file.toPath(), "data");
         Set<String> stagedFiles = new HashSet<>(Collections.singletonList("fileA.txt"));
         when(gitterRepository.getStagedFiles()).thenReturn(stagedFiles);
-
         ArgumentCaptor<GitterCommitEntry> captor = ArgumentCaptor.forClass(GitterCommitEntry.class);
-
-        // Act
         commandCommitService.execute(args);
-
-        // Assert
         verify(gitterRepository).addCommitEntry(captor.capture());
         GitterCommitEntry commitEntry = captor.getValue();
         assertEquals("test hash", commitEntry.getMessage());

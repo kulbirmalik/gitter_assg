@@ -22,8 +22,6 @@ public class GitterCommandListenerTest {
     @Test
     public void testInvalidCommandPrefix() {
         listener.processInput("invalid init");
-
-        // No interaction with registry for non-'gitter' command
         verifyNoInteractions(commandRegistry);
     }
 

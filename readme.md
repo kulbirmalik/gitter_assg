@@ -58,6 +58,9 @@ Ensure the following tools are installed:
    ```bash
    mvn test
 
+7. **🧪Test Case Coverage Results**
+   The Repo has testcases covering 80% of lines.
+
 ---
  **📦 Available Commands**
 1. gitter init – Initializes the Gitter workspace.

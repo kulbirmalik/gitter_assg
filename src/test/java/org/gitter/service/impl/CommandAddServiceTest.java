@@ -25,7 +25,7 @@ public class CommandAddServiceTest {
         commandAddService = new CommandAddService(gitterRepo);
 
         gitterDir = new File(GITTER_DIR);
-        gitterDir.mkdirs(); // Optional: create if needed, or mock `exists()` via wrapper
+        gitterDir.mkdirs();
     }
 
     @Test
@@ -62,7 +62,7 @@ public class CommandAddServiceTest {
 
             commandAddService.execute(args);
 
-            verify(gitterRepo).stageFiles(List.of("file1.txt", "file2.txt")); // includes deleted file2.txt
+            verify(gitterRepo).stageFiles(List.of("file1.txt", "file2.txt"));
         }
     }
 
@@ -78,7 +78,7 @@ public class CommandAddServiceTest {
 
         try (MockedStatic<CommandServiceUtils> mockedStatic = Mockito.mockStatic(CommandServiceUtils.class)) {
             mockedStatic.when(() -> CommandServiceUtils.listAllFilesInDirectory(any()))
-                    .thenReturn(List.of(file1)); // missing.txt is not returned, hence deleted
+                    .thenReturn(List.of(file1));
 
             commandAddService.execute(args);
 
@@ -99,7 +99,6 @@ public class CommandAddServiceTest {
     public void testExecute_InvalidRequest_MissingRepoDir() {
         String[] args = {"gitter", "add", "."};
 
-        // Simulate missing directory
         File fakeDir = new File(GITTER_DIR);
         fakeDir.delete();
 

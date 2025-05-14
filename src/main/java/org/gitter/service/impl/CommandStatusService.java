@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-
 import static org.gitter.utils.CommandServiceUtils.*;
 import static org.gitter.utils.CommandServiceUtils.getBaseGitterDir;
 
@@ -59,7 +58,6 @@ public class CommandStatusService implements CommandService {
                     String committedContent = gitterRepository.getCommittedFileContent(fileName);
                     boolean isModified = !Objects.equals(currentContent, committedContent);
 
-                    // if any committed file is modified
                     if (isModified) {
                         if (isStaged) {
                             toBeCommitted.put(fileName, "modified");
@@ -71,7 +69,6 @@ public class CommandStatusService implements CommandService {
             }
         }
 
-        // for checking deleted files
         for (String committedFile : committedFiles) {
             if (!containsFile(allFilesInDir, getBaseGitterDir().toPath(), committedFile)) {
                 if (stagedFiles.contains(committedFile)) {

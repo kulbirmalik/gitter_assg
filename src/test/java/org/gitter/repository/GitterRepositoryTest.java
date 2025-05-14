@@ -3,11 +3,6 @@ package org.gitter.repository;
 import org.gitter.model.GitterCommitEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +37,6 @@ class GitterRepositoryTest {
         gitterRepository.markFileAsCommitted("file1.txt", "content");
         assertTrue(gitterRepository.getCommittedFiles().contains("file1.txt"));
         assertEquals("content", gitterRepository.getCommittedFileContent("file1.txt"));
-
         gitterRepository.removeCommittedFile("file1.txt");
         assertFalse(gitterRepository.getCommittedFiles().contains("file1.txt"));
     }
@@ -51,7 +45,6 @@ class GitterRepositoryTest {
     void testAddCommitEntry() {
         GitterCommitEntry entry = new GitterCommitEntry("Initial commit", new Date(), "abc123");
         gitterRepository.addCommitEntry(entry);
-
         List<GitterCommitEntry> history = gitterRepository.getCommitHistory();
         assertEquals(1, history.size());
     }
