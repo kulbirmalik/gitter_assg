@@ -58,8 +58,11 @@ Ensure the following tools are installed:
    ```bash
    mvn test
 
-7. **🧪Test Case Coverage Results**
-   The Repo has testcases covering 80% of lines.
+---
+
+## 🧪 **Test Coverage**
+
+The repository has unit tests covering **approximately 80%** of the codebase.
 
 ---
  **📦 Available Commands**
