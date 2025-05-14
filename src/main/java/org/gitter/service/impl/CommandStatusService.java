@@ -49,7 +49,6 @@ public class CommandStatusService implements CommandService {
 
             if (!isCommitted) {
                 if (isStaged) {
-                    // if not in committed , means a new file has been created and is in staging area
                     toBeCommitted.put(fileName, "created");
                 } else {
                     untracked.add(fileName);

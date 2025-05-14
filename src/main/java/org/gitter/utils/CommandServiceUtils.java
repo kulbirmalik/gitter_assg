@@ -17,7 +17,7 @@ public class CommandServiceUtils {
                 String fileName = file.getName();
                 if (file.isDirectory()) {
                     result.addAll(listAllFilesInDirectory(file));
-                } else if (!fileName.equals("HEAD") && !fileName.startsWith("refs")){
+                } else if (!fileName.equals("HEAD") && !fileName.startsWith("main")){
                     result.add(file);
                 }
             }

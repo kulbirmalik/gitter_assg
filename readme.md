@@ -66,3 +66,21 @@ Ensure the following tools are installed:
 4. gitter commit -m "<message>" – Commits staged changes with a message.
 5. gitter diff [<file-or-path>] – Shows file differences (optionally filtered).
 6. gitter log – Lists commit history.
+
+---
+**▶️ Working Demo**
+
+
+![Gitter CLI Example](images/starting_app.png)
+
+![Gitter CLI Example](images/gitter_init_help.png)
+
+![Gitter CLI Example](images/gitter_init_folder_structure.png)
+
+**📚 Adding New Files**
+
+![Gitter CLI Example](images/gitter_new_file_add.png)
+
+![Gitter CLI Example](images/gitter_add_commit.png)
+
+![Gitter CLI Example](images/gitter_diff.png)
