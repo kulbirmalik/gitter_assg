@@ -8,5 +8,6 @@ public enum CommandName {
     COMMIT,
     LOG,
     INIT,
+    RESET,
     UNKNOWN // added for testing
 }

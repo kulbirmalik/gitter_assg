@@ -21,6 +21,7 @@ public class GitterRepository {
     private final Set<String> stagedFiles = new HashSet<>();
     private final Set<String> committedFiles = new HashSet<>();
     private final Map<String, String> committedContent = new HashMap<>();
+    private final Map<String, Map<String, String>> commitIdToContentMap = new HashMap<>();
     private final List<GitterCommitEntry> commitHistory = new ArrayList<>();
 
     public void stageFiles(List<String> filesToStage) {
@@ -50,8 +51,41 @@ public class GitterRepository {
         commitHistory.add(entry);
     }
 
+    public void addCommitIdAndContent(String commitId, Map<String, String> commitedContent) {
+        commitIdToContentMap.put(commitId, commitedContent);
+    }
+
+    public Map<String, String> getContentForCommitId(String commitId) {
+        if(commitIdToContentMap.containsKey(commitId)){
+            return commitIdToContentMap.get(commitId);
+        }else{
+            // should change this later
+            throw new RuntimeException("Invalid CommitId");
+        }
+    }
+
+    public void removeFromCommitIdContentMap(String commitId) {
+        if(commitIdToContentMap.containsKey(commitId)){
+            commitIdToContentMap.remove(commitId);
+        }else{
+            // should change this later
+            throw new RuntimeException("Invalid CommitId");
+        }
+    }
+
     public List<GitterCommitEntry> getCommitHistory() {
         return new ArrayList<>(commitHistory);
+    }
+
+    public void removeCommitFromHistory(String commitId) {
+        GitterCommitEntry entryToBeRemoved = null;
+        for(GitterCommitEntry gitterCommitEntry : commitHistory){
+            if(commitId.equals(gitterCommitEntry.getHash())){
+                entryToBeRemoved  = gitterCommitEntry;
+                break;
+            }
+        }
+        commitHistory.remove(entryToBeRemoved);
     }
 
     public Set<String> getStagedFiles() {

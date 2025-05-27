@@ -68,6 +68,7 @@ public class CommandCommitService implements CommandService {
         if (!currentCommit.isEmpty()) {
             String hash = generateHash(message + System.currentTimeMillis());
             gitterRepository.addCommitEntry(new GitterCommitEntry(hash, new Date(), message));
+            gitterRepository.addCommitIdAndContent(hash, currentCommit);
         }
     }
 
